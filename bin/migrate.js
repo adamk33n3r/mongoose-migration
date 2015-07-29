@@ -39,7 +39,7 @@ program
 program.version(require('../package.json').version);
 
 program.parse(process.argv);
-  
+
 
 // Default command ?
 if (program.args.length === 0) {
@@ -63,8 +63,8 @@ function loadConfiguration() {
   try {
     return require(config_path);
   } catch (e) {
-      error('Missing ' + config_path + ' file. Type `migrate init` to create.');
-    }
+    error('Missing ' + config_path + ' file. Type `migrate init` to create.');
+  }
 }
 
 function timestampConfiguration() {
@@ -72,7 +72,8 @@ function timestampConfiguration() {
     return require(timestamp_path);
   } catch (e) {
     var data = JSON.stringify({ current_timestamp: 0 }, null, 2);
-      fs.writeFileSync(timestamp_path, data);
+    fs.writeFileSync(timestamp_path, data);
+    return data;
   }
 }
 
@@ -83,7 +84,7 @@ function updateTimestamp(timestamp, cb) {
 }
 
 function init() {
-  
+
   if (fs.existsSync(config_path)) {
     error(config_path + ' already exists!');
   }
@@ -110,7 +111,7 @@ function init() {
     data = data
       .replace('MIGRATION_KEY', result.basepath)
       .replace('CONNECTION_KEY', result.connection);
-    
+
     fs.writeFileSync(config_path, data);
 
     success(config_path + ' file created!\nEdit to add your models');
@@ -158,7 +159,7 @@ function migrate(direction, cb, number_of_migrations) {
 
   CONFIG = loadConfiguration();
   timestamp_CONFIG = timestampConfiguration();
-  
+
   if (!number_of_migrations) {
     number_of_migrations = 1;
   }
@@ -170,7 +171,7 @@ function migrate(direction, cb, number_of_migrations) {
   var migrations = fs.readdirSync(CONFIG.basepath);
 
   connnectDB();
-  
+
   migrations = migrations.filter(function (migration_name) {
     var timestamp = getTimestamp(migration_name);
 
